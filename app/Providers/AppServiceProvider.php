@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Listeners\ContactEventSubscriber;
 use App\Models\Property;
 use App\Policies\PropertyPolicy;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,7 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::subscribe(ContactEventSubscriber::class);
         Paginator::useBootstrapFive();
         Gate::policy(Property::class, PropertyPolicy::class);
+
     }
 }

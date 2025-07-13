@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ContactRequestEvent;
 use App\Http\Requests\PropertyContactRequest;
 use App\Http\Requests\SearchPropertiesRequest;
 use App\Mail\PropertyContactMail;
@@ -52,10 +53,12 @@ class PropertyController extends Controller
 
     public function contact(Property $property, PropertyContactRequest $request): RedirectResponse
     {
-        Mail::send(new PropertyContactMail(
-            $property,
-            $request->validated()
-        ));
+        event(new ContactRequestEvent($property, $request->validated()));
+
+//        Mail::send(new PropertyContactMail(
+//            $property,
+//            $request->validated()
+//        ));
 
         return redirect()->back()->with('success', 'Votre demande de contact à bien été envoyée');
     }

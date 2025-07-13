@@ -16,12 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-//         User::factory(10)->create();
-//         User::factory()->unverified()->create();
+         User::factory(10)->create();
+         User::factory()->unverified()->create();
 
         User::factory()->create([
             'name' => 'Mounsif CHIHEB',
             'email' => 'dante2410@hotmail.fr',
+            'role' => 'admin'
         ]);
         $options = Option::factory(20)->create();
         Property::factory(50)

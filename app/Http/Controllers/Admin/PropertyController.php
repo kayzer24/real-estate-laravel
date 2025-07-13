@@ -7,13 +7,20 @@ use App\Http\Requests\Admin\PropertyFormRequest;
 use App\Models\Option;
 use App\Models\Picture;
 use App\Models\Property;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PropertyController extends Controller
 {
+    use AuthorizesRequests;
+
+    public function __construct()
+    {
+        $this->authorizeResource(Property::class, 'property');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -66,6 +73,8 @@ class PropertyController extends Controller
      */
     public function edit(Property $property): View
     {
+//        $this->authorize('delete', $property);
+
         return view('admin.property.form', [
             'property' => $property,
             'options' => Option::pluck('name', 'id'),

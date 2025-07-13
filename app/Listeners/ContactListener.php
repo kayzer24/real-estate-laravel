@@ -6,7 +6,6 @@ use App\Events\ContactRequestEvent;
 use App\Mail\PropertyContactMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailer;
-use Illuminate\Queue\InteractsWithQueue;
 
 class ContactListener implements ShouldQueue
 {

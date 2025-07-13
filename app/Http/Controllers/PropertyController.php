@@ -7,6 +7,7 @@ use App\Http\Requests\PropertyContactRequest;
 use App\Http\Requests\SearchPropertiesRequest;
 use App\Mail\PropertyContactMail;
 use App\Models\Property;
+use App\Notifications\ContactRequestNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
@@ -41,6 +42,16 @@ class PropertyController extends Controller
 
     public function show(string $slug, Property $property): View|RedirectResponse
     {
+//        https://laravel.com/docs/12.x/notifications#generating-notifications
+//        if (count(auth()->user()?->unreadNotifications) > 0){
+//            mark all notifications as read
+//            auth()->user()?->unreadNotifications->markAsRead();
+//            OR mark a given notification as read
+//            auth->user()?->unreadNotifications[0]->markAsRead();
+//        }
+
+//        dump(auth()->user()->notifications);
+
         $expectedSlug = $property->getSlug();
         if ($slug !== $expectedSlug) {
             return to_route('property.show', ["slug" => $expectedSlug, "property" => $property]);
@@ -53,12 +64,11 @@ class PropertyController extends Controller
 
     public function contact(Property $property, PropertyContactRequest $request): RedirectResponse
     {
+        // create event to send an email
         event(new ContactRequestEvent($property, $request->validated()));
 
-//        Mail::send(new PropertyContactMail(
-//            $property,
-//            $request->validated()
-//        ));
+        // send notification to the authenticated user
+        auth()->user()?->notify(new ContactRequestNotification($property, $request->validated()));
 
         return redirect()->back()->with('success', 'Votre demande de contact à bien été envoyée');
     }
